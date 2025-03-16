@@ -14,12 +14,15 @@ def select_all_books():
                         "author": book.author})
         return res
     
-def select_book(id):
+def select_book(id: int):
     with Session(engine) as session:
         statement = select(Book).where(Book.id == id)
         result = session.exec(statement)
         book = result.first()
-
+        
+        if book is None:
+            return None
+        
         obj = {
             "id": book.id,
             "name": book.name,
@@ -41,3 +44,4 @@ def select_book(id):
 
         obj["who_has_it"] = user_data
         return obj
+
