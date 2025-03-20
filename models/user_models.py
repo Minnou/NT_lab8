@@ -7,3 +7,12 @@ class User(SQLModel, table=True):
     description: str = ""
     password: str = Field(max_length=256, min_length=6)
     availablebooks: Optional['AvailableBooks'] = Relationship(back_populates='user')
+
+class UserInput(SQLModel):
+    name: str
+    password: str
+    description: str
+
+class UserLogin(SQLModel):
+    name: str
+    password: str
