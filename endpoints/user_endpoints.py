@@ -22,7 +22,7 @@ async def register(user: UserInput):
     u = User(name=user.name, password=hashed_pwd, description=user.description)
     session.add(u)
     session.commit()
-    return JSONResponse(status_code=HTTP_201_CREATED)
+    return JSONResponse(status_code=HTTP_201_CREATED, content={"detail": "User created"})
 
 
 @user_router.post('/login', tags=['Users'])

@@ -7,7 +7,6 @@ from starlette.responses import JSONResponse
 from starlette.status import HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND, HTTP_401_UNAUTHORIZED
 from fastapi.encoders import jsonable_encoder
 import repos.book_repository
-#from endpoints.user_endpoints import auth_handler
 from models.book_models import *
 from db.db import session
 from endpoints.user_endpoints import auth_handler
@@ -62,3 +61,12 @@ async def availablebooks(book_id: int, user_id: int, user=Depends(auth_handler.g
     session.add(available_book)
     session.commit()
     return available_book
+
+@book_router.delete("/availablebooks/{book_id}:{user_id}", status_code=HTTP_204_NO_CONTENT, tags=["Books", "Users"])
+async def availablebooks(book_id: int, user_id: int, user=Depends(auth_handler.get_current_user)):
+    statement = select(AvailableBooks).where(AvailableBooks.book_id==book_id).where(AvailableBooks.user_id==user_id)
+    available_book = session.exec(statement).first()
+    if not available_book:
+        return JSONResponse(status_code=HTTP_404_NOT_FOUND, content={"detail": "User/book not found"})
+    session.delete(available_book)
+    session.commit()
